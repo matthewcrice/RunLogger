@@ -19,6 +19,16 @@ const storage = multer.diskStorage({
     }
 });
 
+// New route to list uploaded files
+app.get('/files', (req, res) => {
+    const dir = 'uploads';
+    fs.readdir(dir, (err, files) => {
+        if (err) {
+            return res.status(500).send('Unable to scan directory: ' + err); }
+        res.render('files', { files: files });
+    }); }
+);
+
 const upload = multer({ storage: storage });
 
 app.post('/upload', upload.single('file'), (req, res) => {
@@ -47,6 +57,11 @@ app.get('/contact', (req, res) => {
 app.get('/upload', (req, res) => {
     res.render('upload', { title: 'upload' });
 });
+
+app.get('/files', (req, res) => {
+    res.render('files', { title: 'files' });
+});
+
 
 // Define the root route to render the map
 app.get('/map', (req, res) => {

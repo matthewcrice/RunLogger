@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <title>Uploaded Files</title>
 </head>
 <body>
-<h1>Welcome to the Home Page</h1>
-<p>This is the home page of our multi-page site.</p>
+<h1>Uploaded Files</h1>
+<ul>
+    <% files.forEach(file => { %>
+        <li><a href="/uploads/<%= file %>"><%= file %></a></li>
+    <% }); %>
+</ul>
+<br>
+<a href="/">Upload Another File</a>
 <nav>
     <a href="/">Home</a> |
     <a href="/about">About</a> |
     <a href="/contact">Contact</a> |
     <a href="/upload">Upload</a> |
-    <a href="/files">Files</a> |
     <a href="/map">Map</a>
 </nav>
 </body>
