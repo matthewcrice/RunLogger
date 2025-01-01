@@ -8,18 +8,15 @@
 <body>
 <h1>Uploaded Files</h1>
 <ul>
-    <% files.forEach(file => { %>
-        <li><a href="/uploads/<%= file %>"><%= file %></a></li>
-    <% }); %>
+    <% if (files && files.length > 0) { %>
+        <% files.forEach(file => { %>
+            <li><a href="/files/parse/<%= file %>"><%= file %></a></li>
+        <% }); %>
+    <% } else { %>
+        <li>No files uploaded yet.</li>
+    <% } %>
 </ul>
 <br>
 <a href="/">Upload Another File</a>
-<nav>
-    <a href="/">Home</a> |
-    <a href="/about">About</a> |
-    <a href="/contact">Contact</a> |
-    <a href="/upload">Upload</a> |
-    <a href="/map">Map</a>
-</nav>
 </body>
 </html>
