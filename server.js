@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const GpxParser = require('gpxparser');
 const app = express();
 const port = 3000;
 
@@ -32,8 +33,19 @@ app.get('/files', (req, res) => {
 const upload = multer({ storage: storage });
 
 app.post('/upload', upload.single('file'), (req, res) => {
-    res.send('File uploaded successfully!');
+    const filePath = path.join(__dirname, 'uploads', req.file.filename);
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send('Error reading file'); }
+        const gpx = new GpxParser();
+        gpx.parse(data); res.render('gpx', {
+            gpxData: gpx });
+    });
 });
+
+//app.post('/upload', upload.single('file'), (req, res) => {
+//    res.send('File uploaded successfully!');
+//});
 
 // Set the view engine to EJS
 app.set('view engine', 'ejs');
