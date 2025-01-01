@@ -20,7 +20,12 @@
 
     <% gpxFiles.forEach(file => { %>
     new L.GPX('/uploads/extracted/<%= file %>', {
-        async: true
+        async: true,
+        marker_options: {
+            startIconUrl: '',  // Empty string to remove start icon
+            endIconUrl: '',    // Empty string to remove end icon
+            shadowUrl: ''      // Empty string to remove shadow icon
+        }
     }).on('loaded', function(e) {
         map.fitBounds(e.target.getBounds());
     }).addTo(map);
