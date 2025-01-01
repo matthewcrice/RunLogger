@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 const app = express();
 const port = 3000;
@@ -8,12 +9,16 @@ const port = 3000;
 // Set up Multer for file storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-        },
+        const dir = 'uploads';
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+        cb(null, dir); },
     filename: (req, file, cb) => {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 });
+
 const upload = multer({ storage: storage });
 
 app.post('/upload', upload.single('file'), (req, res) => {
