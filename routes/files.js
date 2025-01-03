@@ -1,6 +1,8 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const unzipper = require("unzipper");
+const purgeDirectory = require('../utils/purgeDirectory');
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -15,14 +17,18 @@ router.get('/', (req, res) => {
 
 router.get('/parse/:filename', (req, res) => {
     const filePath = path.join(__dirname, '../uploads', req.params.filename);
-    fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) {
-            return res.status(500).send('Error reading file');
-        }
+    const extractionDir = path.join(__dirname, '../uploads/extracted');
+    if (!fs.existsSync(extractionDir)) {
+        fs.mkdirSync(extractionDir);
+    }
 
-        const gpxFilePath = `/uploads/${req.params.filename}`;
-        res.render('gpx', { gpxFilePath: gpxFilePath });
-    });
+    fs.createReadStream(filePath)
+        .pipe(unzipper.Extract({ path: extractionDir }))
+        .on('close', () => {
+            res.redirect(`/files/render-multiple`); })
+        .on('error', (err) => {
+            res.status(500).send('Error extracting ZIP file: ' + err);
+        });
 });
 
 router.get('/render-multiple', (req, res) => {
@@ -33,6 +39,11 @@ router.get('/render-multiple', (req, res) => {
         }
         const gpxFiles = files.filter(file => path.extname(file).toLowerCase() === '.gpx');
         res.render('multiple-gpx', { gpxFiles: gpxFiles });
+
+        // Asynchronously purge the extracted directory after rendering the view
+        //setImmediate(() => { const extractionDir = path.join(__dirname, '../uploads/extracted');
+        //    purgeDirectory(extractionDir);
+        //});
     });
 });
 

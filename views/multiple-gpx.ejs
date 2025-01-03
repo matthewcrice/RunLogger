@@ -10,7 +10,7 @@
 </head>
 <body>
 <h1>Multiple GPX Routes</h1>
-<div id="map" style="width: 100%; height: 500px;"></div>
+<div id="map" style="width: 100%; height: 900px;"></div>
 <script>
     var map = L.map('map').setView([0, 0], 2);
 
@@ -21,6 +21,12 @@
     <% gpxFiles.forEach(file => { %>
     new L.GPX('/uploads/extracted/<%= file %>', {
         async: true,
+        polyline_options: {
+            color: 'orange',
+            opacity: 0.75,
+            weight: 2,
+            lineCap: 'round'
+        },
         marker_options: {
             startIconUrl: '',  // Empty string to remove start icon
             endIconUrl: '',    // Empty string to remove end icon
